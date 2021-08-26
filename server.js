@@ -13,11 +13,116 @@ app.all('*', function(req, res, next) {
     next();
  });
  
-
-app.get('/', (req, res) => {
+// 抽奖结果接口
+app.get('/PrizeResult', (req, res) => {
     var priceNum = Math.floor(Math.random()*8)
-    
     res.send({Num:priceNum})
+})
+// 奖品列表接口
+app.get('/PrizeList', (req, res) => {
+    res.send({resultList:[
+        {
+          name: '奖品0',
+          order: 1, // 顺序
+          probability: 12.5,
+          prizeimage: "待添加 ",
+        },
+        {
+          name: '奖品1',
+          order: 2,
+          probability: 12.5,
+          prizeimage: "待添加",
+        },
+        {
+            name: '奖品2',
+            order: 2,
+            probability: 12.5,
+            prizeimage: "待添加",
+          },
+        {
+          name: '奖品3',
+          order: 3,
+          probability: 12.5,
+          prizeimage: "待添加",
+        },
+        {
+          name: '奖品4',
+          order: 4,
+          probability: 12.5,
+          prizeimage: "待添加",
+        },
+        {
+          name: '奖品5',
+          order: 5,
+          probability: 12.5,
+          prizeimage: "待添加",
+        },
+        {
+          name: '奖品6',
+          order: 6,
+          probability: 12.5,
+          prizeimage: "待添加",
+        },
+        {
+          name: '奖品7',
+          order: 7,
+          probability: 12.5,
+          prizeimage: "待添加",
+        },
+      ]})
+})
+// 当前选中的8个奖品列表接口
+app.get('/RaffleList', (req, res) => {
+    res.send({resultList:[
+        {
+            name: '奖品0',
+            order: 1, // 顺序
+            probability: 12.5,
+            prizeimage: "待添加 ",
+          },
+          {
+            name: '奖品1',
+            order: 2,
+            probability: 12.5,
+            prizeimage: "待添加",
+          },
+          {
+              name: '奖品2',
+              order: 2,
+              probability: 12.5,
+              prizeimage: "待添加",
+            },
+          {
+            name: '奖品3',
+            order: 3,
+            probability: 12.5,
+            prizeimage: "待添加",
+          },
+          {
+            name: '奖品4',
+            order: 4,
+            probability: 12.5,
+            prizeimage: "待添加",
+          },
+          {
+            name: '奖品5',
+            order: 5,
+            probability: 12.5,
+            prizeimage: "待添加",
+          },
+          {
+            name: '奖品6',
+            order: 6,
+            probability: 12.5,
+            prizeimage: "待添加",
+          },
+          {
+            name: '奖品7',
+            order: 7,
+            probability: 12.5,
+            prizeimage: "待添加",
+          },
+      ]})
 })
 
 app.listen(port, () => {
