@@ -151,6 +151,13 @@ app.delete('/deletePrize', jsonParser, (req, res) => {
     data: '删除成功'
   })
 })
+// 编辑中奖率接口
+app.post('/updateProbability', jsonParser, (req, res) => {
+  console.log(req.body)
+  res.send({
+    data: '修改成功'
+  })
+})
 app.listen(port, () => {
   console.log(`Example app listening at http://localhost:${port}`)
 })
