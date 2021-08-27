@@ -36,18 +36,12 @@ app.get("/RaffileList", (req, res) => {
   })
 });
 
-// 抽奖结果接口
-app.get("/PrizeResult", (req, res) => {
-  const priceNum = Math.floor(Math.random() * global.len);
-  res.send({Num: priceNum});
-});
-
 // todo 添加保存中奖信息
 app.get('/PrizeResult', (req, res) => {
     // read prize json
     const fs = require('fs');
-    let prize_data = fs.readFileSync('PrizeList.json', {encoding: 'utf8', flag: 'r'})
-    let prize_json = JSON.parse(prize_data)
+    let prize_data = fs.readFileSync(__dirname + RaffileList, {encoding: 'utf8', flag: 'r'})
+    let prize_json = JSON.parse(prize_data)['resultList']
     // cumulative probability counting
     let total_probability = 0;
     const cumulative_probability = [];
