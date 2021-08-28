@@ -19,7 +19,7 @@ app.all("*", function (req, res, next) {
 });
 
 //初始化
-app.get("/RaffileList", (req, res) => {
+app.get("/RaffleList", (req, res) => {
   //  读取文件并把新的内容传入json文件
   fs.readFile((__dirname + RaffileList), 'utf8', function (err, data) {
     //  如果有错，抛出错误，防止格式错误

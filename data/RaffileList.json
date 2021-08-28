@@ -1,50 +1,64 @@
 {
   "resultList": [
     {
+      "id": 0,
       "name": "奖品0",
       "order": 1,
       "probability": 12.5,
       "prizeimage": "待添加 "
     },
     {
+      "id": 1,
       "name": "奖品1",
       "order": 2,
       "probability": 12.5,
       "prizeimage": "待添加"
     },
     {
+      "id": 2,
       "name": "奖品2",
-      "order": 2,
-      "probability": 12.5,
-      "prizeimage": "待添加"
-    },
-    {
-      "name": "奖品3",
       "order": 3,
       "probability": 12.5,
       "prizeimage": "待添加"
     },
     {
-      "name": "奖品4",
+      "id": 4,
+      "name": "奖品7",
+      "order": 8,
+      "probability": 12.5,
+      "prizeimage": "待添加"
+    },
+    {
+      "id": 3,
+      "name": "抽奖",
+      "times": 10,
+      "prizeimage": "待添加"
+    },
+    {
+      "id": 5,
+      "name": "奖品3",
       "order": 4,
       "probability": 12.5,
       "prizeimage": "待添加"
     },
     {
-      "name": "奖品5",
-      "order": 5,
+      "id": 6,
+      "name": "奖品6",
+      "order": 7,
       "probability": 12.5,
       "prizeimage": "待添加"
     },
     {
-      "name": "奖品6",
+      "id": 7,
+      "name": "奖品5",
       "order": 6,
       "probability": 12.5,
       "prizeimage": "待添加"
     },
     {
-      "name": "奖品7",
-      "order": 7,
+      "id": 8,
+      "name": "奖品4",
+      "order": 5,
       "probability": 12.5,
       "prizeimage": "待添加"
     }
