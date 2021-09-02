@@ -4,6 +4,7 @@ const path = require('path');
 const router = express.Router();
 const app = express();
 const port = 3000;
+let bodyParser = require('body-parser')
 //json文件所在路径
 const RaffileList = "/data/RaffileList.json";
 global.len = 0;
@@ -17,6 +18,8 @@ app.all("*", function (req, res, next) {
   res.header("Content-Type", "application/json;charset=utf-8");
   next();
 });
+// 解析提交的json参数,可能有更好的方法
+let jsonParser = bodyParser.json()
 
 //初始化
 app.get("/RaffileList", (req, res) => {
