@@ -7,6 +7,7 @@ const port = 3000;
 let bodyParser = require('body-parser')
 //json文件所在路径
 const RaffileList = "/data/RaffileList.json";
+const HistoryList = "/data/HistoryList.json";
 global.len = 0;
 
 //设置跨域访问
@@ -16,88 +17,107 @@ app.all("*", function (req, res, next) {
   res.header("Access-Control-Allow-Methods", "PUT,POST,GET,DELETE,OPTIONS");
   res.header("X-Powered-By", " 3.2.1");
   res.header("Content-Type", "application/json;charset=utf-8");
+  res.header("Access-Control-Allow-Headers", "Content-Type,Content-Length, Authorization, Accept,X-Requested-With");
   next();
 });
-// 解析提交的json参数,可能有更好的方法
 let jsonParser = bodyParser.json()
 
-//初始化
-app.get("/RaffileList", (req, res) => {
-  //  读取文件并把新的内容传入json文件
-  fs.readFile((__dirname + RaffileList), 'utf8', function (err, data) {
-    //  如果有错，抛出错误，防止格式错误
-    if (err) {
-      return res.send(err)
-    }
-    try {
-      data = JSON.parse(data)
-      global.len = data.resultList.length
-      return res.status(200).send({data})
-    } catch (error) {
-      return res.status(200).send(error)
-    }
-  })
-});
-
-// todo 添加保存中奖信息
+// 抽奖结果接口，根据概率计算
 app.get('/PrizeResult', (req, res) => {
-    // read prize json
-    const fs = require('fs');
-    let prize_data = fs.readFileSync(__dirname + RaffileList, {encoding: 'utf8', flag: 'r'})
-    let prize_json = JSON.parse(prize_data)['resultList']
-    // cumulative probability counting
-    let total_probability = 0;
-    const cumulative_probability = [];
-    prize_json.forEach((element) => {
-        total_probability += element['probability']
-        cumulative_probability.push(total_probability)
-    })
-    // random number and check prize
-    const price = Math.floor(Math.random() * total_probability);
-    for (let i = 0; i < cumulative_probability.length; i++) {
-        if (price <= cumulative_probability[i]) {
-            res.send(prize_json[i])
-            return
-        }
+  // read prize json
+  const fs = require('fs');
+  let prize_data = fs.readFileSync(__dirname + RaffileList, {
+    encoding: 'utf8',
+    flag: 'r'
+  })
+  let prize_json = JSON.parse(prize_data)['resultList']
+  // cumulative probability counting
+  let total_probability = 0;
+  const cumulative_probability = [];
+  prize_json.forEach((element) => {
+    total_probability += element['probability']
+    cumulative_probability.push(total_probability)
+  })
+  // random number and check prize
+  const price = Math.floor(Math.random() * total_probability);
+  for (let i = 0; i < cumulative_probability.length; i++) {
+    if (price <= cumulative_probability[i]) {
+      res.send(prize_json[i])
+      // 保存中奖信息
+      let prizetime = new Date
+      let prizeInfo = {
+        username: '您',
+        prizename: prize_json[i].name,
+        time: prizetime.toLocaleDateString()
+      }
+      RaffileHistory(prizeInfo)
+      return
     }
+  }
 })
 
-// 奖品列表接口
-app.get("/PrizeList", (req, res) => {
+app.get("/RaffleList", (req, res) => {
+  const fs = require('fs');
+  let RaffleList = JSON.parse(fs.readFileSync(__dirname + RaffileList, {
+    encoding: 'utf8',
+    flag: 'r'
+  }))
   res.send({
-    resultList: [],
+    RaffleList
   });
 });
 
-// todo 创建
-router.post('/create', function (req, res) {
-  //  设置id等数据
-  let newS = {
-    name: "奖品0",
-    order: 1,
-    probability: 12.5,
-    prizeimage: "待添加"
-  };
+// 中奖列表接口
+app.get("/HistoryList", (req, res) => {
+  const fs = require('fs');
+  let historyList = JSON.parse(fs.readFileSync(__dirname + HistoryList, {
+    encoding: 'utf8',
+    flag: 'r'
+  }))
+  res.send({
+    historyList: historyList
+  });
+});
 
-  //  读取文件并把新的内容传入json文件
-  fs.readFile((__dirname + RaffileList), 'utf8', function (err, data) {
-    //如果有错，抛出错误，防止格式错误
-    if (err) throw err
-
-    try {
-      data = JSON.parse(data)
-    } catch (error) {
-      return res.status(200).send(error)
-    }
-
-    data.push(newS)
-    //  把新数据传入json文件
-    fs.writeFile(path.join(__dirname + RaffileList), JSON.stringify(data, null, 4), function (err) {
-      if (err) throw err
-      res.status(200).send(data)
-    })
+// 金币余额读取接口
+let UserBanace = 2000
+app.get('/getUserBanace', (req, res) => {
+  res.send({
+    UserBanace: UserBanace
   })
 })
+
+// 金币余额更新接口,每次抽奖减10金币
+app.post('/setUserBanace', jsonParser, (req, res) => {
+  UserBanace -= 40
+  console.log('用户余额：' + UserBanace)
+  res.send({
+    UserBanace: UserBanace
+  })
+})
+
+// 中奖列表更新函数
+function RaffileHistory(prizeInfo) {
+  const fs = require('fs');
+  let prize_data = fs.readFileSync(__dirname + HistoryList, {
+    encoding: 'utf8',
+    flag: 'r'
+  })
+  let historyList_json = JSON.parse(prize_data)
+  historyList_json['historyList'].push(prizeInfo)
+  console.log(historyList_json['historyList'].length);
+  if (historyList_json['historyList'].length>10) {
+    historyList_json['historyList'].length=0
+  }
+  console.log(historyList_json);
+  var str = JSON.stringify(historyList_json);
+  fs.writeFile(__dirname + HistoryList, str, function (err) {
+    if (err) {
+      console.error(err);
+    }
+    console.log('中奖列表更新成功');
+  })
+}
 
 // 新增奖品接口
 app.post('/addprize', jsonParser, (req, res) => {
@@ -121,9 +141,7 @@ app.post('/updateProbability', jsonParser, (req, res) => {
   })
 })
 
-app.get("/RaffleList", (req, res) => {
-  res.send({});
-});
+
 
 app.listen(port, () => {
   console.log(`Example app listening at http://localhost:${port}`)
